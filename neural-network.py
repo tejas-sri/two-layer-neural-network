@@ -7,7 +7,7 @@ weight1=np.array([])
 weight2=np.array([])
 
 class NN:
-    def __init__(self, x, y):
+    def __init__(self, x, y, canGlobal1=False, canGlobal2=False):
         global weight1, weight2
 
         self.x=x
@@ -15,10 +15,12 @@ class NN:
         self.output=np.zeros(y.shape)
         
         self.weights1=np.random.rand(self.x.shape[1], 4)
-        weight1=self.weights1[:]
+        if canGlobal1:
+            weight1=self.weights1[:]
         
         self.weights2=np.random.rand(4, 1)
-        weight2=self.weights2[:]
+        if canGlobal2:
+            weight2=self.weights2[:]
 
     def sigmoid(x, deriv=False):
         if deriv:
@@ -44,16 +46,21 @@ class NN:
         self.weights2 += d_weights2
         weight2=self.weights2[:]
 
-c=[[1, 1, 1], [1, 0, 1], [0, 1, 0], [0, 0, 1], [1, 1, 0]]
-d=[[1], [0], [1], [1], [0]]
+c=[[1, 1, 1], [1, 0, 1], [0, 1, 0], [0, 0, 1], [1, 1, 0], [1, 0, 0], [0, 1, 1], [0, 0, 0]]
+d=[[1], [0], [1], [1], [0], [1], [0], [0]]
 
 c=np.array(c)
 d=np.array(d)
 
-train=NN(c, d)
+train=NN(c, d, True, True)
 
 for i in range(1500):
     NN.feedforward(train)
     NN.backprop(train)
 
-print(train.output)
+a=np.array([[0, 0, 0]])
+b=np.array([[]])
+
+train=NN(a, b)
+NN.feedforward(train)
+print(int(round(train.output[0][0])))
